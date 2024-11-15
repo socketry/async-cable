@@ -9,6 +9,6 @@ module Async::Cable
 			@bus.subscribe(name, self)
 		end
 		
-		
+		def stream_from(name)
 	end
 end

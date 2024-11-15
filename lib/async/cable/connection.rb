@@ -7,8 +7,9 @@ module Async::Cable
 		end
 		
 		def handle_subscribe(identifier, bus)
-			klass = Object.const_get(identifier[:channel])
-			channel = klass.new(self, bus)
+			options = JSON.parse(identifier, symbolize_names: true)
+			klass = Object.const_get(options[:channel])
+			channel = klass.new(self, bus, **options)
 			
 			channels[identifier] = channel
 		end
