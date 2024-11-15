@@ -1,0 +1,3 @@
+[submodule "action-cable-next-playground"]
+	path = action-cable-next-playground
+	url = https://github.com/anycable/action-cable-next-playground
