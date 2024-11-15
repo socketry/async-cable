@@ -7,7 +7,10 @@ require_relative 'cable/version'
 
 begin
 	require "rails/railtie"
-	require_relative "cable/railtie"
 rescue LoadError
 	# Ignore.
+end
+
+if defined?(Rails::Railtie)
+	require_relative "cable/railtie"
 end

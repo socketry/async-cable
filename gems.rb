@@ -4,4 +4,3 @@ gem "async"
 gem "async-websocket"
 
 gem "rails"
-gem "actioncable-next"

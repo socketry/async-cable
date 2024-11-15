@@ -23,4 +23,6 @@ Gem::Specification.new do |spec|
 	spec.required_ruby_version = ">= 3.1"
 	
 	spec.add_dependency "async", "~> 2.9"
+	spec.add_dependency "async-websocket"
+	spec.add_dependency "actioncable-next"
 end

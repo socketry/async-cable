@@ -15,11 +15,11 @@ module Async::Cable
 				@connections[identifier].delete(connection)
 			end
 			
-			def disconnect(connection)
-				@subscribers.each do |identifier, connections|
-					connections.delete(connection)
-				end
-			end
+			# def disconnect(connection)
+			# 	@subscribers.each do |identifier, connections|
+			# 		connections.delete(connection)
+			# 	end
+			# end
 			
 			def broadcast(identifier, message)
 				@subscribers[identifier].each do |connection|
