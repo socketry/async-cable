@@ -10,19 +10,19 @@ Gem::Specification.new do |spec|
 	spec.authors = ["Samuel Williams"]
 	spec.license = "MIT"
 	
-	spec.cert_chain  = ['release.cert']
-	spec.signing_key = File.expand_path('~/.gem/release.pem')
+	spec.cert_chain  = ["release.cert"]
+	spec.signing_key = File.expand_path("~/.gem/release.pem")
 	
 	spec.metadata = {
 		"documentation_uri" => "https://socketry.github.io/async-cable/",
 		"source_code_uri" => "https://github.com/socketry/async-cable",
 	}
 	
-	spec.files = Dir['{lib}/**/*', '*.md', base: __dir__]
+	spec.files = Dir["{lib}/**/*", "*.md", base: __dir__]
 	
 	spec.required_ruby_version = ">= 3.1"
 	
+	spec.add_dependency "actioncable-next"
 	spec.add_dependency "async", "~> 2.9"
 	spec.add_dependency "async-websocket"
-	spec.add_dependency "actioncable-next"
 end

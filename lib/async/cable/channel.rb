@@ -1,3 +1,6 @@
+# Released under the MIT License.
+# Copyright, 2023-2024, by Samuel Williams.
+
 module Async::Cable
 	class Channel
 		def initialize(connection, bus)

@@ -1,3 +1,6 @@
+# Released under the MIT License.
+# Copyright, 2024, by Samuel Williams.
+
 require 'async/websocket/adapters/rack'
 
 require_relative 'socket'

@@ -1,3 +1,6 @@
+# Released under the MIT License.
+# Copyright, 2023-2024, by Samuel Williams.
+
 require 'set'
 
 module Async::Cable
