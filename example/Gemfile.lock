@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    async-cable (0.0.0)
+    async-cable (0.1.0)
       actioncable-next
       async (~> 2.9)
       async-websocket

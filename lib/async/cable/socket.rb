@@ -27,6 +27,8 @@ module Async::Cable
 		end
 		
 		def transmit(data)
+			Console.debug(self, "Sending cable data:", data)
+			
 			@connection.write(@coder.encode(data))
 			@connection.flush
 		rescue IOError, Errno::EPIPE => error

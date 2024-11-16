@@ -9,7 +9,6 @@ module Async
 	module Cable
 		class Railtie < Rails::Railtie
 			initializer "async.cable.configure_rails_initialization" do |app|
-				$stderr.puts "Configuring Action Cable to use Async::Cable middleware..."
 				app.middleware.use Async::Cable::Middleware
 			end
 		end
