@@ -46,6 +46,8 @@ module Async
 				@server.add_connection(connection)
 				
 				while message = websocket.read
+					Console.debug(self, "Received cable data:", message)
+					
 					connection.handle_incoming(@coder.decode(message.buffer))
 				end
 			rescue Protocol::WebSocket::ClosedError
