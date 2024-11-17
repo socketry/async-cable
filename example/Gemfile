@@ -30,6 +30,7 @@ gem "solid_queue"
 gem "solid_cable"
 
 gem "async-cable", path: "../", require: "async/cable"
+gem "redis"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false

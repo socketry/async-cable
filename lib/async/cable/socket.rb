@@ -13,7 +13,10 @@ module Async::Cable
 			@coder = coder
 			@server = server
 			@connection = connection
+			@output = Thread::Queue.new
 		end
+		
+		attr :output
 		
 		def request
 			# Copied from ActionCable::Server::Socket#request
@@ -27,12 +30,7 @@ module Async::Cable
 		end
 		
 		def transmit(data)
-			Console.debug(self, "Sending cable data:", data)
-			
-			@connection.write(@coder.encode(data))
-			@connection.flush
-		rescue IOError, Errno::EPIPE => error
-			logger.debug "Failed to write to the socket: #{error.message}"
+			@output.push(@coder.encode(data))
 		end
 		
 		def close
@@ -42,11 +40,6 @@ module Async::Cable
 		def perform_work(receiver, ...)
 			Async do
 				receiver.send(...)
-			rescue Exception => error
-				logger.error "There was an exception - #{error.class}(#{error.message})"
-				logger.error error.backtrace.join("\n")
-				
-				receiver.handle_exception if receiver.respond_to?(:handle_exception)
 			end
 		end
 	end

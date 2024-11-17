@@ -4,18 +4,11 @@
 require 'async/websocket/adapters/rack'
 
 require_relative 'socket'
-require_relative 'executor'
 
 module Async
 	module Cable
-		def self.default_server
-			::ActionCable.server.tap do |server|
-				server.instance_variable_set(:@executor, Executor.new)
-			end
-		end
-		
 		class Middleware
-			def initialize(app, server: Cable.default_server)
+			def initialize(app, server: ActionCable.server)
 				@app = app
 				@server = server
 				@coder = ActiveSupport::JSON
@@ -36,8 +29,6 @@ module Async
 			
 			def handle_incoming_websocket(env, websocket)
 				socket = Socket.new(env, websocket, @server, coder: @coder)
-				
-				# Action Cable connection instance
 				connection = @server.config.connection_class.call.new(@server, socket)
 				
 				connection.handle_open
@@ -45,9 +36,16 @@ module Async
 				@server.setup_heartbeat_timer
 				@server.add_connection(connection)
 				
+				output_task = Async do
+					while message = socket.output.pop
+						Console.debug(self, "Sending cable data:", message)
+						websocket.write(message)
+						websocket.flush if socket.output.empty?
+					end
+				end
+				
 				while message = websocket.read
 					Console.debug(self, "Received cable data:", message)
-					
 					connection.handle_incoming(@coder.decode(message.buffer))
 				end
 			rescue Protocol::WebSocket::ClosedError
@@ -55,6 +53,10 @@ module Async
 			rescue => error
 				Console.warn(self, error)
 			ensure
+				if output_task
+					output_task.stop
+				end
+				
 				if connection
 					@server.remove_connection(connection)
 					connection.handle_close
