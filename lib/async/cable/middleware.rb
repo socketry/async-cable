@@ -32,31 +32,19 @@ module Async
 				connection = @server.config.connection_class.call.new(@server, socket)
 				
 				connection.handle_open
-				
-				@server.setup_heartbeat_timer
 				@server.add_connection(connection)
 				
-				output_task = Async do
-					while message = socket.output.pop
-						Console.debug(self, "Sending cable data:", message)
-						websocket.write(message)
-						websocket.flush if socket.output.empty?
-					end
-				end
+				@server.setup_heartbeat_timer
 				
 				while message = websocket.read
 					Console.debug(self, "Received cable data:", message)
 					connection.handle_incoming(@coder.decode(message.buffer))
 				end
-			rescue Protocol::WebSocket::ClosedError
+			rescue Protocol::WebSocket::ClosedError, EOFError
 				# This is a normal disconnection.
 			rescue => error
 				Console.warn(self, error)
 			ensure
-				if output_task
-					output_task.stop
-				end
-				
 				if connection
 					@server.remove_connection(connection)
 					connection.handle_close

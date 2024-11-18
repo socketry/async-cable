@@ -8,12 +8,13 @@ module Async::Cable
 		
 		delegate :worker_pool, :logger, to: :@server
 		
-		def initialize(env, connection, server, coder: ActiveSupport::JSON)
+		def initialize(env, websocket, server, coder: ActiveSupport::JSON)
 			@env = env
-			@coder = coder
+			@websocket = websocket
 			@server = server
-			@connection = connection
-			@output = Thread::Queue.new
+			@coder = coder
+			
+			@write_guard = Mutex.new
 		end
 		
 		attr :output
@@ -30,15 +31,20 @@ module Async::Cable
 		end
 		
 		def transmit(data)
-			@output.push(@coder.encode(data))
+			@write_guard.synchronize do
+				@websocket.write(@coder.encode(data))
+				@websocket.flush
+			end
 		end
 		
 		def close
-			@connection.close
+			@write_guard.synchronize do
+				@websocket.close
+			end
 		end
 		
 		def perform_work(receiver, ...)
-			Async do
+			Async::Task.current.async do
 				receiver.send(...)
 			end
 		end
