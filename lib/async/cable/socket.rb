@@ -3,11 +3,6 @@
 
 module Async::Cable
 	class Socket
-		#== Action Cable socket interface ==
-		attr_reader :env, :logger, :protocol
-		
-		delegate :worker_pool, :logger, to: :@server
-		
 		def initialize(env, websocket, server, coder: ActiveSupport::JSON)
 			@env = env
 			@websocket = websocket
@@ -17,7 +12,12 @@ module Async::Cable
 			@write_guard = Mutex.new
 		end
 		
+		attr :env
 		attr :output
+		
+		def logger
+			Console
+		end
 		
 		def request
 			# Copied from ActionCable::Server::Socket#request

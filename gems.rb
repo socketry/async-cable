@@ -3,7 +3,7 @@
 
 source "https://rubygems.org"
 
-gem "rails"
+gemspec
 
 group :maintenance, optional: true do
 	gem "bake-gem"
@@ -15,4 +15,9 @@ group :test do
 	gem "covered"
 	gem "decode"
 	gem "rubocop"
+	
+	gem "sus-fixtures-async-http"
+	gem "sus-fixtures-console"
+	
+	gem "async-websocket"
 end

@@ -1,9 +1,10 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'async/websocket/adapters/rack'
+require "async/websocket/adapters/rack"
+require "action_cable"
 
-require_relative 'socket'
+require_relative "socket"
 
 module Async
 	module Cable
@@ -14,6 +15,8 @@ module Async
 				@coder = ActiveSupport::JSON
 				@protocols = ::ActionCable::INTERNAL[:protocols]
 			end
+			
+			attr :server
 			
 			def call(env)
 				if Async::WebSocket::Adapters::Rack.websocket?(env) and allow_request_origin?(env)
@@ -37,7 +40,7 @@ module Async
 				@server.setup_heartbeat_timer
 				
 				while message = websocket.read
-					Console.debug(self, "Received cable data:", message)
+					Console.debug(self, "Received cable data:", message.buffer)
 					connection.handle_incoming(@coder.decode(message.buffer))
 				end
 			rescue Protocol::WebSocket::ClosedError, EOFError
