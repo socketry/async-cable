@@ -3,7 +3,7 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require_relative 'cable/version'
+require_relative "cable/version"
 
 begin
 	require "rails/railtie"

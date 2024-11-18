@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "async/cable/middleware"
 
 require "protocol/rack/adapter"
