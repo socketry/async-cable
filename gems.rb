@@ -20,4 +20,7 @@ group :test do
 	gem "sus-fixtures-console"
 	
 	gem "async-websocket"
+	
+	gem "bake-test"
+	gem "bake-test-external"
 end
