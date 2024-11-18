@@ -32,6 +32,8 @@ describe Async::Cable::Middleware do
 		expect(welcome_message).to have_keys(
 			type: be == "welcome"
 		)
+		
+		connection.shutdown
 	ensure
 		connection.close
 	end
@@ -55,6 +57,8 @@ describe Async::Cable::Middleware do
 		expect(confirmation).to have_keys(
 			identifier: be == JSON.dump({"channel" => "TestChannel"})
 		)
+		
+		connection.shutdown
 	ensure
 		connection.close
 	end
