@@ -7,7 +7,7 @@ This guide shows you how to add `async-cable` to your project to enable real-tim
 Add the gem to your project:
 
 ~~~ bash
-$ bundle add async-cable
+$ bundle add async-cable --require "async/cable"
 ~~~
 
 ## Usage
