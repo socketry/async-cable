@@ -37,8 +37,9 @@ module Async
 				
 				connection.handle_open
 				@server.add_connection(connection)
-				
 				@server.setup_heartbeat_timer
+				
+				socket_task = socket.run
 				
 				while message = websocket.read
 					Console.debug(self, "Received cable data:", message.buffer)
@@ -53,6 +54,8 @@ module Async
 					@server.remove_connection(connection)
 					connection.handle_close
 				end
+				
+				socket_task&.stop
 			end
 			
 			# TODO: Shouldn't this be moved to ActionCable::Server::Base?

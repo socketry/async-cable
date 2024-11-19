@@ -10,14 +10,13 @@ module Async::Cable
 			@server = server
 			@coder = coder
 			
-			@write_guard = Mutex.new
+			@output = ::Thread::Queue.new
 		end
 		
 		attr :env
-		attr :output
 		
 		def logger
-			Console
+			@server.logger
 		end
 		
 		def request
@@ -31,23 +30,32 @@ module Async::Cable
 			end
 		end
 		
-		def transmit(data)
-			@write_guard.synchronize do
-				@websocket.write(@coder.encode(data))
-				@websocket.flush
+		def run(parent: Async::Task.current)
+			parent.async do
+				while buffer = @output.pop
+					@websocket.send_text(buffer)
+					@websocket.flush if @output.empty?
+				end
+			rescue => error
+			ensure
+				@websocket.close_write(error)
 			end
+		end
+		
+		def transmit(data)
+			# Console.info(self, "Transmitting data:", data, task: Async::Task.current?)
+			@output.push(@coder.encode(data))
 		end
 		
 		def close
-			@write_guard.synchronize do
-				@websocket.close
-			end
+			# Console.info(self, "Closing socket.", task: Async::Task.current?)
+			@output.close
 		end
 		
+		# This can be called from the work pool, off the event loop.
 		def perform_work(receiver, ...)
-			Async::Task.current.async do
-				receiver.send(...)
-			end
+			# Console.info(self, "Performing work:", receiver)
+			receiver.send(...)
 		end
 	end
 end
