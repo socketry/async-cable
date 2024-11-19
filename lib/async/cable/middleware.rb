@@ -48,7 +48,7 @@ module Async
 			rescue Protocol::WebSocket::ClosedError, EOFError
 				# This is a normal disconnection.
 			rescue => error
-				Console.warn(self, error)
+				Console.warn(self, "Abnormal client failure!", error)
 			ensure
 				if connection
 					@server.remove_connection(connection)

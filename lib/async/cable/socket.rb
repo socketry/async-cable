@@ -33,10 +33,12 @@ module Async::Cable
 		def run(parent: Async::Task.current)
 			parent.async do
 				while buffer = @output.pop
+					# Console.debug(self, "Sending cable data:", buffer, flush: @output.empty?)
 					@websocket.send_text(buffer)
 					@websocket.flush if @output.empty?
 				end
 			rescue => error
+				Console.error(self, "Error while sending cable data:", error)
 			ensure
 				@websocket.close_write(error)
 			end
