@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-url = ARGV.pop || 'http://localhost:8080/cable'
+url = ARGV.pop || "http://localhost:8080/cable"
 
 require "async"
 require "async/http/endpoint"
@@ -78,7 +79,7 @@ Async do
 	endpoint = Async::HTTP::Endpoint.parse(url)
 	connections = nil
 	
-	connection_count = ENV.fetch('CONNECTIONS', 5000).to_i
+	connection_count = ENV.fetch("CONNECTIONS", 5000).to_i
 	
 	duration = Async::Clock.measure do
 		connections = connect(endpoint, count: connection_count)
@@ -87,7 +88,7 @@ Async do
 	puts "Connected #{connections.size} clients in #{format_duration(duration)}."
 	puts "Amortized connection time: #{format_duration(duration / connection_count)}."
 	
-	broadcast_count = ENV.fetch('BROADCASTS', 100).to_i
+	broadcast_count = ENV.fetch("BROADCASTS", 100).to_i
 	
 	duration = Async::Clock.measure do
 		broadcast(connections, {action: "broadcast", payload: "Hello, World!"}, count: broadcast_count)
