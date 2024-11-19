@@ -14,6 +14,8 @@ describe Async::Cable::Middleware do
 	
 	before do
 		cable_server.config.disable_request_forgery_protection = true
+		cable_server.config.logger = Console
+		cable_server.config.cable = {"adapter" => "async"}
 	end
 	
 	after do
@@ -25,6 +27,8 @@ describe Async::Cable::Middleware do
 	end
 	
 	let(:connection) {Async::WebSocket::Client.connect(client_endpoint)}
+	
+	let(:identifier) {JSON.dump(channel: "TestChannel")}
 	
 	it "can connect and receive welcome messages" do
 		welcome_message = connection.read.parse
@@ -41,7 +45,7 @@ describe Async::Cable::Middleware do
 	it "can connect and send broadcast messages" do
 		subscribe_message = ::Protocol::WebSocket::TextMessage.generate({
 			command: "subscribe",
-			identifier: JSON.dump({"channel" => "TestChannel"}),
+			identifier: identifier,
 		})
 		
 		subscribe_message.send(connection)
@@ -55,7 +59,30 @@ describe Async::Cable::Middleware do
 		end
 		
 		expect(confirmation).to have_keys(
-			identifier: be == JSON.dump({"channel" => "TestChannel"})
+			identifier: be == identifier
+		)
+		
+		broadcast_data = {action: "broadcast", payload: "Hello, World!"}
+		
+		broadcast_message = Protocol::WebSocket::TextMessage.generate(
+			command: "message",
+			identifier: identifier,
+			data: broadcast_data.to_json
+		)
+		
+		broadcast_message.send(connection)
+		connection.flush
+		
+		while message = connection.read
+			broadcast = message.parse
+			
+			if broadcast[:identifier] == identifier
+				break
+			end
+		end
+		
+		expect(broadcast).to have_keys(
+			identifier: be == identifier
 		)
 		
 		connection.shutdown

@@ -26,4 +26,6 @@ group :test do
 	
 	gem "bake-test"
 	gem "bake-test-external"
+	
+	gem "redis"
 end

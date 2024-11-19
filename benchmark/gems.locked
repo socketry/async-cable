@@ -390,7 +390,6 @@ DEPENDENCIES
   covered
   decode
   iodine
-  json
   puma
   rails
   redis
