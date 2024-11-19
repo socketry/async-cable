@@ -20,6 +20,8 @@ group :test do
 	gem "decode"
 	gem "rubocop"
 	
+	gem "rubocop-rails-omakase"
+	
 	gem "sus-fixtures-async-http"
 	gem "sus-fixtures-console"
 	
