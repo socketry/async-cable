@@ -19,9 +19,10 @@ group :test do
 	gem "sus"
 	gem "covered"
 	gem "decode"
-	gem "rubocop"
 	
+	gem "rubocop"
 	gem "rubocop-rails-omakase"
+	gem "rubocop-socketry"
 	
 	gem "sus-fixtures-async-http"
 	gem "sus-fixtures-console"
@@ -33,5 +34,3 @@ group :test do
 	
 	gem "redis"
 end
-
-gem "rubocop-socketry", "~> 0.2.0", group: :test
