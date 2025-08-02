@@ -14,6 +14,10 @@ Please see the [project documentation](https://socketry.github.io/async-cable/) 
 
 Please see the [project releases](https://socketry.github.io/async-cable/releases/index) for all releases.
 
+### v0.2.0
+
+  - Don't close the WebSocket if it is already closed.
+
 ### v0.1.0
 
   - Initial implementation.
