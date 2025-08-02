@@ -43,7 +43,7 @@ module Async
 				socket_task = socket.run
 				
 				while message = websocket.read
-					Console.debug(self, "Received cable data:", message.buffer)
+					# Console.debug(self, "Received cable data:", message.buffer)
 					connection.handle_incoming(@coder.decode(message.buffer))
 				end
 			rescue Protocol::WebSocket::ClosedError, EOFError

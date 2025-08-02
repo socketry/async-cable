@@ -14,17 +14,23 @@ require_relative "../application"
 
 class BenchmarkServer
 	def self.run!
-		Sync do
+		Sync do |task|
 			websocket_endpoint = Async::HTTP::Endpoint.parse("http://127.0.0.1:8080/cable")
 			
 			app = ::Falcon::Server.middleware(
 				::Async::Cable::Middleware.new(
 					::Protocol::HTTP::Middleware::HelloWorld
-				)
+				),
+				cache: false,
 			)
 			
 			server = Falcon::Server.new(app, websocket_endpoint)
-			server.run.wait
+			server.run
+			
+			while gets
+				task.print_hierarchy
+				GC.start
+			end
 		end
 	end
 end

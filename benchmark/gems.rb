@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-eval_gemfile "../gems.rb"
-
 gem "rails"
+gem "async-cable"
 
 gem "puma"
-gem "iodine"
-gem "anycable"
+gem "falcon"
+# gem "iodine"
+# gem "anycable"
 gem "redis"
-

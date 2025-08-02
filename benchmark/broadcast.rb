@@ -19,6 +19,9 @@ SUBSCRIBE_MESSAGE = Protocol::WebSocket::TextMessage.generate(
 	identifier: IDENTIFIER
 )
 
+CONNECTION_COUNT = ENV.fetch("CONNECTIONS", 1000).to_i
+BROADCAST_COUNT = ENV.fetch("BROADCASTS", 20).to_i
+
 def connect(endpoint, count: 100, parent: Async::Task.current)
 	count.times.map do
 		parent.async do
@@ -79,23 +82,21 @@ Async do
 	endpoint = Async::HTTP::Endpoint.parse(url)
 	connections = nil
 	
-	connection_count = ENV.fetch("CONNECTIONS", 5000).to_i
-	
 	duration = Async::Clock.measure do
-		connections = connect(endpoint, count: connection_count)
+		connections = connect(endpoint, count: CONNECTION_COUNT)
 	end
 	
 	puts "Connected #{connections.size} clients in #{format_duration(duration)}."
-	puts "Amortized connection time: #{format_duration(duration / connection_count)}."
-	
-	broadcast_count = ENV.fetch("BROADCASTS", 100).to_i
+	puts "Amortized connection time: #{format_duration(duration / CONNECTION_COUNT)}."
+	puts "Amortized connection rate: #{(CONNECTION_COUNT / duration).round(2)} clients/s."
 	
 	duration = Async::Clock.measure do
-		broadcast(connections, {action: "broadcast", payload: "Hello, World!"}, count: broadcast_count)
+		broadcast(connections, {action: "broadcast", payload: "Hello, World!"}, count: BROADCAST_COUNT)
 	end
 	
-	puts "Broadcast #{broadcast_count} times to #{connections.size} clients in #{format_duration(duration)}."
-	puts "Amortized broadcast time: #{format_duration(duration / (connection_count * broadcast_count))}."
+	puts "Broadcast #{BROADCAST_COUNT} times to #{connections.size} clients in #{format_duration(duration)}."
+	puts "Amortized broadcast time: #{format_duration(duration / (CONNECTION_COUNT * BROADCAST_COUNT))}."
+	puts "Amortized broadcast rate: #{(CONNECTION_COUNT * BROADCAST_COUNT / duration).round(2)} broadcasts/s."
 	
 	connections&.each do |connection|
 		connection.shutdown

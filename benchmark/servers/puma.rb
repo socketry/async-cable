@@ -3,11 +3,6 @@
 
 require_relative "../application"
 
-ActionCable.server.config.cable = {
-	"adapter" => ENV.fetch("ACTION_CABLE_ADAPTER", "redis"),
-	"url" => ENV["REDIS_URL"]
-}
-
 class BenchmarkServer
 	def self.run!
 		require "puma/cli"
