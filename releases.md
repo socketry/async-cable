@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.3.0
 
   - Filter requests based on path - don't eat all inbound WebSocket connections.
 
