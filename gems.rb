@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Released under the MIT License.
 # Copyright, 2023-2024, by Samuel Williams.
 
@@ -32,3 +33,5 @@ group :test do
 	
 	gem "redis"
 end
+
+gem "rubocop-socketry", "~> 0.2.0", group: :test

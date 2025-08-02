@@ -1,4 +1,8 @@
 # frozen_string_literal: true
+
+# Released under the MIT License.
+# Copyright, 2024, by Samuel Williams.
+
 require "action_cable"
 
 class TestChannel < ActionCable::Channel::Base
