@@ -11,8 +11,9 @@ require_relative "socket"
 module Async
 	module Cable
 		class Middleware
-			def initialize(app, server: ActionCable.server)
+			def initialize(app, path: "/cable", server: ActionCable.server)
 				@app = app
+				@path = path
 				@server = server
 				@coder = ActiveSupport::JSON
 				@protocols = ::ActionCable::INTERNAL[:protocols]
@@ -20,8 +21,12 @@ module Async
 			
 			attr :server
 			
+			def valid_path?(env)
+				env["PATH_INFO"] == @path
+			end
+			
 			def call(env)
-				if Async::WebSocket::Adapters::Rack.websocket?(env) and allow_request_origin?(env)
+				if valid_path?(env) and Async::WebSocket::Adapters::Rack.websocket?(env) and allow_request_origin?(env)
 					Async::WebSocket::Adapters::Rack.open(env, protocols: @protocols) do |websocket|
 						handle_incoming_websocket(env, websocket)
 					end

@@ -34,6 +34,44 @@ describe Async::Cable::Middleware do
 	
 	let(:identifier) {JSON.dump(channel: "TestChannel")}
 	
+	with "#valid_path?" do
+		let(:middleware) {subject.new(nil, path: "/cable")}
+		
+		it "returns true when PATH_INFO matches configured path" do
+			env = {"PATH_INFO" => "/cable"}
+			expect(middleware.valid_path?(env)).to be == true
+		end
+		
+		it "returns false when PATH_INFO does not match configured path" do
+			env = {"PATH_INFO" => "/different"}
+			expect(middleware.valid_path?(env)).to be == false
+		end
+		
+		it "returns false when PATH_INFO is nil" do
+			env = {"PATH_INFO" => nil}
+			expect(middleware.valid_path?(env)).to be == false
+		end
+		
+		it "returns false when PATH_INFO is missing from env" do
+			env = {}
+			expect(middleware.valid_path?(env)).to be == false
+		end
+		
+		with "custom path configuration" do
+			let(:middleware) {subject.new(nil, path: "/websocket")}
+			
+			it "returns true when PATH_INFO matches custom path" do
+				env = {"PATH_INFO" => "/websocket"}
+				expect(middleware.valid_path?(env)).to be == true
+			end
+			
+			it "returns false when PATH_INFO matches default path but not custom path" do
+				env = {"PATH_INFO" => "/cable"}
+				expect(middleware.valid_path?(env)).to be == false
+			end
+		end
+	end
+	
 	it "can connect and receive welcome messages" do
 		welcome_message = connection.read.parse
 		

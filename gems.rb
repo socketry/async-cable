@@ -9,6 +9,8 @@ gemspec
 
 gem "async"
 
+gem "agent-context"
+
 group :maintenance, optional: true do
 	gem "bake-gem"
 	gem "bake-modernize"
