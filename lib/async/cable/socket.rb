@@ -41,7 +41,9 @@ module Async::Cable
 			rescue => error
 				Console.error(self, "Error while sending cable data:", error)
 			ensure
-				@websocket.close_write(error)
+				unless @websocket.closed?
+					@websocket.close_write(error)
+				end
 			end
 		end
 		
