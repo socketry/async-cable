@@ -60,7 +60,12 @@ module Async
 				
 				while message = websocket.read
 					# Console.debug(self, "Received cable data:", message.buffer)
-					connection.handle_incoming(@coder.decode(message.buffer))
+					begin
+						connection.handle_incoming(@coder.decode(message.buffer))
+					rescue ActionCable::Connection::Subscriptions::Error => error
+						# Subscription-level errors (e.g. `AlreadySubscribedError` raised when a client re-sends a `subscribe` command, which happens during Turbo morph/refresh cycles) should not tear down the entire WebSocket connection. Log and continue so the connection (and any underlying pubsub subscriptions, like PostgreSQL `LISTEN`) stays alive.
+						Console.warn(self, "Subscription error (ignored):", error)
+					end
 				end
 			rescue Protocol::WebSocket::ClosedError, EOFError
 				# This is a normal disconnection.
