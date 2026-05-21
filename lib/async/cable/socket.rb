@@ -49,12 +49,15 @@ module Async::Cable
 		
 		def transmit(data)
 			# Console.info(self, "Transmitting data:", data, task: Async::Task.current?)
+			return if @output.closed?
 			@output.push(@coder.encode(data))
+		rescue ClosedQueueError
+			# Closed concurrently between the check and the push.
 		end
 		
 		def close
 			# Console.info(self, "Closing socket.", task: Async::Task.current?)
-			@output.close
+			@output.close unless @output.closed?
 		end
 		
 		# This can be called from the work pool, off the event loop.
