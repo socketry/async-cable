@@ -1,0 +1,12 @@
+# Automatically generated context index for Utopia::Project guides.
+# Do not edit then files in this directory directly, instead edit the guides and then run `bake utopia:project:agent:context:update`.
+---
+description: An asynchronous adapter for ActionCable.
+metadata:
+  documentation_uri: https://socketry.github.io/async-cable/
+  source_code_uri: https://github.com/socketry/async-cable
+files:
+- path: getting-started.md
+  title: Getting Started
+  description: This guide shows you how to add `async-cable` to your project to enable
+    real-time communication between clients and servers using Falcon and Action Cable.
