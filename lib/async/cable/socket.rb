@@ -29,7 +29,7 @@ module Async
 				@server.logger
 			end
 			
-      # Build an `ActionDispatch::Request` from the Rack environment, merging Rails application config when available.
+			# Build an `ActionDispatch::Request` from the Rack environment, merging Rails application config when available.
 			# @returns [ActionDispatch::Request]
 			def request
 				# Copied from `ActionCable::Server::Socket#request`:
@@ -61,7 +61,7 @@ module Async
 				end
 			end
 			
-      # Encode and enqueue a message for asynchronous delivery to the client.
+			# Encode and enqueue a message for asynchronous delivery to the client.
 			# @parameter data [Object] The data to transmit, which will be encoded by the coder.
 			def transmit(data)
 				# Console.info(self, "Transmitting data:", data, task: Async::Task.current?)
@@ -71,7 +71,7 @@ module Async
 				# Closed concurrently between the check and the push.
 			end
 			
-      # Close the outbound queue, causing the drain task to terminate once all pending messages have been sent.
+			# Close the outbound queue, causing the drain task to terminate once all pending messages have been sent.
 			def close
 				# Console.info(self, "Closing socket.", task: Async::Task.current?)
 				@output.close unless @output.closed?
