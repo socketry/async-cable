@@ -13,6 +13,8 @@ Gem::Specification.new do |spec|
 	spec.cert_chain  = ["release.cert"]
 	spec.signing_key = File.expand_path("~/.gem/release.pem")
 	
+	spec.homepage = "https://github.com/socketry/async-cable"
+	
 	spec.metadata = {
 		"documentation_uri" => "https://socketry.github.io/async-cable/",
 		"source_code_uri" => "https://github.com/socketry/async-cable",
