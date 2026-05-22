@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Released under the MIT License.
-# Copyright, 2024, by Samuel Williams.
+# Copyright, 2024-2026, by Samuel Williams.
 
 require "async/cable/middleware"
 
@@ -13,6 +13,10 @@ require "test_channel"
 
 describe Async::Cable::Middleware do
 	include Sus::Fixtures::Async::HTTP::ServerContext
+	
+	def url
+		"http://localhost:0/cable"
+	end
 	
 	let(:cable_server) {::ActionCable::Server::Base.new}
 	

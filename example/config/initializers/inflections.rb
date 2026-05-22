@@ -1,4 +1,5 @@
-# Be sure to restart your server when you modify this file.
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
 
 # Add new inflection rules using the following format. Inflections
 # are locale specific, and you may define rules for as many different

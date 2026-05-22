@@ -1,4 +1,5 @@
-# Pin npm packages by running ./bin/importmap
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
 
 pin "application"
 pin "@hotwired/turbo-rails", to: "turbo.min.js"

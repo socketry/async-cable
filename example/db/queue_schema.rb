@@ -1,3 +1,6 @@
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
+
 ActiveRecord::Schema[7.1].define(version: 1) do
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
     t.bigint "job_id", null: false

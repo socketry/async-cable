@@ -1,3 +1,6 @@
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
+
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"

@@ -1,3 +1,6 @@
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
+
 require "application_system_test_case"
 
 class ItemsTest < ApplicationSystemTestCase

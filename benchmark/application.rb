@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
+
 require "rails"
 require "global_id"
 
@@ -30,7 +33,7 @@ ActionCable.server.config.cable = {
 	"url" => ENV["REDIS_URL"]
 }
 
-ActionCable.server.config.connection_class = -> {ApplicationCable::Connection}
+ActionCable.server.config.connection_class = ->{ApplicationCable::Connection}
 ActionCable.server.config.disable_request_forgery_protection = true
 ActionCable.server.config.logger = Rails.logger
 

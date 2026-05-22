@@ -1,4 +1,5 @@
-# Be sure to restart your server when you modify this file.
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
 
 # Configure parameters to be partially matched (e.g. passw matches password) and filtered from the log file.
 # Use this to limit dissemination of sensitive information.
