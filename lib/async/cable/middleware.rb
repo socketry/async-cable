@@ -10,7 +10,12 @@ require_relative "socket"
 
 module Async
 	module Cable
+		# Rack middleware that intercepts WebSocket upgrade requests and dispatches them to ActionCable, passing all other requests to the next app in the middleware stack.
 		class Middleware
+			# Create a new middleware instance.
+			# @parameter app [#call] The next Rack application in the middleware stack.
+			# @parameter path [String] The URL path that the cable endpoint is mounted at.
+			# @parameter server [ActionCable::Server::Base] The ActionCable server to use.
 			def initialize(app, path: "/cable", server: ActionCable.server)
 				@app = app
 				@path = path
@@ -21,10 +26,16 @@ module Async
 			
 			attr :server
 			
+			# Check whether the request path matches the configured cable path.
+			# @parameter env [Hash] The Rack environment.
+			# @returns [Boolean] Whether the request is for the cable endpoint.
 			def valid_path?(env)
 				env["PATH_INFO"] == @path
 			end
 			
+			# Handle an incoming Rack request. WebSocket upgrade requests on the configured path are handed off to ActionCable; all other requests are forwarded to the next app in the middleware stack.
+			# @parameter env [Hash] The Rack environment.
+			# @returns [Array] A Rack response triple.
 			def call(env)
 				if valid_path?(env) and Async::WebSocket::Adapters::Rack.websocket?(env) and allow_request_origin?(env)
 					Async::WebSocket::Adapters::Rack.open(env, protocols: @protocols) do |websocket|

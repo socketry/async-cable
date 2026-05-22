@@ -7,6 +7,7 @@ require_relative "middleware"
 
 module Async
 	module Cable
+		# Rails integration that automatically inserts {Middleware} into the application middleware stack during initialization.
 		class Railtie < Rails::Railtie
 			initializer "async.cable.configure_rails_initialization" do |app|
 				app.middleware.use Async::Cable::Middleware
