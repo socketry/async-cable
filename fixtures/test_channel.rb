@@ -10,6 +10,10 @@ class TestChannel < ActionCable::Channel::Base
 		stream_from "testing-#{test_id}"
 	end
 	
+	def unsubscribed
+		transmit({type: "unsubscribed"})
+	end
+	
 	def echo(data)
 		transmit(data)
 	end

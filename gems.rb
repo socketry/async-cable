@@ -7,6 +7,9 @@ source "https://rubygems.org"
 
 gemspec
 
+# Use the fix branch until https://github.com/anycable/actioncable-next/pull/17 is merged and released.
+gem "actioncable-next", github: "ioquatix/actioncable-next", branch: "fix/close-ensure-socket"
+
 gem "async"
 
 gem "agent-context"

@@ -70,6 +70,7 @@ module Async
 			
 			# Close the outbound queue, causing the drain task to terminate once all pending messages have been sent.
 			def close
+				# Console.info(self, "Closing socket.", task: Async::Task.current?)
 				@output.close
 			end
 			

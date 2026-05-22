@@ -26,10 +26,6 @@ describe Async::Cable::Middleware do
 		cable_server.config.cable = {"adapter" => "async"}
 	end
 	
-	after do
-		@cable_server&.restart
-	end
-	
 	let(:app) do
 		Protocol::Rack::Adapter.new(subject.new(nil, server: cable_server))
 	end
@@ -132,6 +128,62 @@ describe Async::Cable::Middleware do
 		)
 		
 		connection.shutdown
+	ensure
+		connection.close
+	end
+	
+	it "handles server restart cleanly when a channel transmits during unsubscribed" do
+		# Subscribe to the channel so TestChannel#unsubscribed will be triggered on close.
+		subscribe_message = ::Protocol::WebSocket::TextMessage.generate({
+			command: "subscribe",
+			identifier: identifier,
+		})
+		
+		subscribe_message.send(connection)
+		
+		while message = connection.read
+			break if message.parse[:type] == "confirm_subscription"
+		end
+		
+		# Restart closes every connection: connection.close sends the disconnect
+		# frame then calls socket.close, which closes the output queue. The
+		# middleware ensure block then calls connection.handle_close, which runs
+		# TestChannel#unsubscribed, which calls transmit on the now-closed socket.
+		cable_server.restart
+		
+		while message = connection.read
+			break if message.parse[:type] == "disconnect"
+		end
+	ensure
+		connection.close
+	end
+	
+	it "restart does not raise when called while a prior restart is still being cleaned up" do
+		# Establish a subscribed connection so there is an entry in the server's
+		# connections list.
+		subscribe_message = ::Protocol::WebSocket::TextMessage.generate({
+			command: "subscribe",
+			identifier: identifier,
+		})
+		
+		subscribe_message.send(connection)
+		
+		while message = connection.read
+			break if message.parse[:type] == "confirm_subscription"
+		end
+		
+		# First restart: calls connection.close on every connection, which sends
+		# the disconnect frame and closes the socket's output queue.  The
+		# connection is NOT removed from the list here — that only happens in the
+		# middleware's ensure block, which runs asynchronously after the WebSocket
+		# loop exits.
+		cable_server.restart
+		
+		# Second restart immediately (no yield to the scheduler) — the connection
+		# is still in the list but its socket is already closed, so
+		# connection.close → transmit(disconnect) → queue.push raises
+		# ClosedQueueError.
+		cable_server.restart
 	ensure
 		connection.close
 	end
