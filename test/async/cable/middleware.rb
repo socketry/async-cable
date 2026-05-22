@@ -14,6 +14,10 @@ require "test_channel"
 describe Async::Cable::Middleware do
 	include Sus::Fixtures::Async::HTTP::ServerContext
 	
+	def url
+		"http://localhost:0/cable"
+	end
+	
 	let(:cable_server) {::ActionCable::Server::Base.new}
 	
 	before do
