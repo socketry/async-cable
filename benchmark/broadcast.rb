@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
+
 url = ARGV.pop || "http://localhost:8080/cable"
 
 require "async"

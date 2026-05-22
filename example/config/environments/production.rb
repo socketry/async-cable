@@ -1,3 +1,6 @@
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
+
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do

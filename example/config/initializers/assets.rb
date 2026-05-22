@@ -1,4 +1,5 @@
-# Be sure to restart your server when you modify this file.
+# Released under the MIT License.
+# Copyright, 2024-2026, by Samuel Williams.
 
 # Version of your assets, change this if you want to expire all your assets.
 Rails.application.config.assets.version = "1.0"
