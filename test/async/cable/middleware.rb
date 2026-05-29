@@ -72,6 +72,81 @@ describe Async::Cable::Middleware do
 		end
 	end
 	
+	with "non-websocket requests" do
+		let(:inner_app) do
+			lambda do |env|
+				[200, {"content-type" => "text/plain"}, ["hello"]]
+			end
+		end
+		
+		let(:app) do
+			Protocol::Rack::Adapter.new(subject.new(inner_app, server: cable_server))
+		end
+		
+		it "forwards non-websocket requests on the cable path to the inner app" do
+			response = client.get("/cable")
+			expect(response.read).to be == "hello"
+		ensure
+			response&.close
+		end
+		
+		it "forwards requests on other paths to the inner app" do
+			response = client.get("/other")
+			expect(response.read).to be == "hello"
+		ensure
+			response&.close
+		end
+	end
+	
+	with "#allow_request_origin?" do
+		let(:middleware) {subject.new(nil, server: cable_server)}
+		
+		before do
+			cable_server.config.disable_request_forgery_protection = false
+		end
+		
+		it "allows requests matching the configured origin host" do
+			cable_server.config.allow_same_origin_as_host = true
+			env = {"HTTP_ORIGIN" => "http://example.com", "HTTP_HOST" => "example.com", "rack.url_scheme" => "http"}
+			expect(middleware.__send__(:allow_request_origin?, env)).to be == true
+		end
+		
+		it "allows requests from explicitly allowed origins" do
+			cable_server.config.allowed_request_origins = ["http://allowed.example"]
+			env = {"HTTP_ORIGIN" => "http://allowed.example", "HTTP_HOST" => "example.com", "rack.url_scheme" => "http"}
+			expect(middleware.__send__(:allow_request_origin?, env)).to be == true
+		end
+		
+		it "rejects requests from disallowed origins" do
+			cable_server.config.allowed_request_origins = ["http://allowed.example"]
+			env = {"HTTP_ORIGIN" => "http://evil.example", "HTTP_HOST" => "example.com", "rack.url_scheme" => "http"}
+			expect(middleware.__send__(:allow_request_origin?, env)).to be == false
+		end
+	end
+	
+	with "#handle_incoming_websocket" do
+		include Sus::Fixtures::Async::ReactorContext
+		
+		let(:middleware) {subject.new(nil, server: cable_server)}
+		
+		# Minimal websocket double whose `read` raises an unexpected error,
+		# exercising the abnormal-failure rescue branch.
+		let(:failing_websocket) do
+			Class.new do
+				def read; raise "unexpected"; end
+				def send_text(_); end
+				def flush; end
+				def closed?; true; end
+				def close_write(_ = nil); end
+			end.new
+		end
+		
+		it "logs unexpected errors and cleans up the connection" do
+			env = {"PATH_INFO" => "/cable", "HTTP_HOST" => "example.com", "rack.url_scheme" => "http"}
+			middleware.__send__(:handle_incoming_websocket, env, failing_websocket)
+		end
+	end
+	
 	it "can connect and receive welcome messages" do
 		welcome_message = connection.read.parse
 		
