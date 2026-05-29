@@ -68,6 +68,12 @@ module Async
 				@output.push(@coder.encode(data))
 			end
 			
+			# Enqueue an already-encoded message for asynchronous delivery to the client, bypassing the coder. Useful for "fastlane" broadcasts where the payload is encoded once and shared across many connections.
+			# @parameter data [String] The pre-encoded message to transmit.
+			def raw_transmit(data)
+				@output.push(data)
+			end
+			
 			# Close the outbound queue, causing the drain task to terminate once all pending messages have been sent.
 			def close
 				# Console.info(self, "Closing socket.", task: Async::Task.current?)
