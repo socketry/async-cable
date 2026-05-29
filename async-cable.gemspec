@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
 	spec.add_dependency "actioncable", ">= 8.1.0.alpha"
 	spec.add_dependency "async", "~> 2.9"
 	spec.add_dependency "async-websocket"
+	spec.add_dependency "async-redis", "~> 0.13"
 end
