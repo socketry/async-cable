@@ -24,7 +24,9 @@ Gem::Specification.new do |spec|
 	
 	spec.required_ruby_version = ">= 3.3"
 	
-	spec.add_dependency "actioncable-next"
+	# Requires the `ActionCable::Server::Socket` abstraction introduced by
+	# https://github.com/rails/rails/pull/50979 (Rails 8.1+).
+	spec.add_dependency "actioncable", ">= 8.1.0.alpha"
 	spec.add_dependency "async", "~> 2.9"
 	spec.add_dependency "async-websocket"
 end

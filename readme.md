@@ -1,6 +1,8 @@
 # Async::Cable
 
-This is a proof-of-concept adapter for Rails 7.2+. It depends on `actioncable-next` which completely replaces the internal implementation of Action Cable with a pluggable one.
+This is a proof-of-concept adapter for Action Cable.
+
+The `next` branch tracks Rails `main` and relies on the `ActionCable::Server::Socket` abstraction introduced by [rails/rails#50979](https://github.com/rails/rails/pull/50979) (Rails 8.1+). For stable Rails (≤ 8.0), use the `main` branch, which depends on [`actioncable-next`](https://github.com/anycable/actioncable-next).
 
 [![Development Status](https://github.com/socketry/async-cable/workflows/Test/badge.svg)](https://github.com/socketry/async-cable/actions?workflow=Test)
 
