@@ -207,6 +207,50 @@ describe Async::Cable::Middleware do
 		connection.close
 	end
 	
+	it "survives subscription errors without tearing down the WebSocket" do
+		# Subscribe twice with the same identifier. ActionCable raises
+		# `Subscriptions::AlreadySubscribedError` on the second one; the middleware
+		# should log a warning and keep the connection alive so subsequent
+		# commands still work.
+		subscribe_message = ::Protocol::WebSocket::TextMessage.generate({
+			command: "subscribe",
+			identifier: identifier,
+		})
+		
+		subscribe_message.send(connection)
+		
+		while message = connection.read
+			break if message.parse[:type] == "confirm_subscription"
+		end
+		
+		# Duplicate subscribe — would otherwise raise AlreadySubscribedError and
+		# kill the connection.
+		subscribe_message.send(connection)
+		connection.flush
+		
+		# Connection is still alive: send a broadcast and verify it round-trips.
+		broadcast_message = ::Protocol::WebSocket::TextMessage.generate(
+			command: "message",
+			identifier: identifier,
+			data: {action: "broadcast", payload: "after-duplicate-subscribe"}.to_json,
+		)
+		broadcast_message.send(connection)
+		connection.flush
+		
+		while message = connection.read
+			parsed = message.parse
+			if parsed[:identifier] == identifier && parsed[:message]
+				break
+			end
+		end
+		
+		expect(parsed[:message]).to have_keys(payload: be == "after-duplicate-subscribe")
+		
+		connection.shutdown
+	ensure
+		connection.close
+	end
+	
 	it "handles server restart cleanly when a channel transmits during unsubscribed" do
 		# Subscribe to the channel so TestChannel#unsubscribed will be triggered on close.
 		subscribe_message = ::Protocol::WebSocket::TextMessage.generate({
