@@ -56,6 +56,29 @@ describe Async::Cable::Socket do
 		end
 	end
 	
+	with "#transmit" do
+		it "encodes data using the coder before enqueueing it" do
+			socket.transmit({type: "ping"})
+			expect(socket.instance_variable_get(:@output).pop).to be == ActiveSupport::JSON.encode({type: "ping"})
+		end
+	end
+	
+	with "#raw_transmit" do
+		it "enqueues the data verbatim without encoding it" do
+			payload = ActiveSupport::JSON.encode({type: "ping"})
+			socket.raw_transmit(payload)
+			expect(socket.instance_variable_get(:@output).pop).to be_equal(payload)
+		end
+		
+		it "cannot raw_transmit after close" do
+			socket.close
+			
+			expect do
+				socket.raw_transmit("already encoded")
+			end.to raise_exception(ClosedQueueError)
+		end
+	end
+	
 	with "#run" do
 		include Sus::Fixtures::Async::ReactorContext
 		

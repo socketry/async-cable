@@ -1,5 +1,9 @@
 # Releases
 
+## Unreleased
+
+  - Add {ruby Async::Cable::Socket#raw_transmit} for pushing pre-encoded payloads to the client without re-encoding. Enables "fastlane" broadcasts that encode the message once and share it across many connections.
+
 ## v0.3.0
 
   - Filter requests based on path - don't eat all inbound WebSocket connections.
