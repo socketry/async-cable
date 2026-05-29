@@ -12,6 +12,29 @@ Please see the [project documentation](https://socketry.github.io/async-cable/) 
 
   - [Getting Started](https://socketry.github.io/async-cable/guides/getting-started/index) - This guide shows you how to add `async-cable` to your project to enable real-time communication between clients and servers using Falcon and Action Cable.
 
+### Async Redis Adapter
+
+`async-cable` ships with a fiber-based Redis subscription adapter: `async_redis`. It mirrors Rails' built-in `redis` adapter (dynamic subscribe/unsubscribe, reconnect + resubscribe) but uses [`async-redis`](https://github.com/socketry/async-redis) so all I/O runs cooperatively on the fiber scheduler instead of blocking a thread.
+
+Configure Action Cable to use it by setting `adapter: async_redis` in `config/cable.yml`:
+
+```yaml
+production:
+  adapter: async_redis
+  url: <%= ENV.fetch("REDIS_URL", "redis://127.0.0.1:6379/0") %>
+  # Optional:
+  channel_prefix: <%= "#{Rails.application.class.module_parent_name.underscore}_production" %>
+  reconnect_attempts: [0, 1, 2, 5]
+```
+
+`reconnect_attempts` accepts either an integer (retry that many times with no delay) or an array of per-attempt delays in seconds.
+
+Notes:
+
+- Broadcasting (`#broadcast`) is safe to call from any thread or fiber. When the caller is already inside a reactor it runs cooperatively; otherwise a transient reactor is opened via `Sync { }`.
+- The subscription listener runs on a single dedicated thread hosting its own reactor and shared across all channels.
+- `success_callback` is invoked immediately after issuing `SUBSCRIBE` (async-redis does not expose subscribe ACKs).
+
 ## Releases
 
 Please see the [project releases](https://socketry.github.io/async-cable/releases/index) for all releases.

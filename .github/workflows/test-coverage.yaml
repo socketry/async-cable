@@ -13,6 +13,20 @@ jobs:
     name: ${{matrix.ruby}} on ${{matrix.os}}
     runs-on: ${{matrix.os}}-latest
     
+    # GitHub Actions service containers run only on Linux runners; on
+    # macOS this block is ignored and the Redis adapter tests skip
+    # themselves via a TCP probe.
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
     strategy:
       matrix:
         os:
