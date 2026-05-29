@@ -7,8 +7,10 @@ source "https://rubygems.org"
 
 gemspec
 
-# Use the fix branch until https://github.com/anycable/actioncable-next/pull/17 is merged and released.
-gem "actioncable-next", github: "ioquatix/actioncable-next", branch: "fix/close-ensure-socket"
+# The `next` branch targets Rails main, which now includes the
+# `ActionCable::Server::Socket` abstraction (rails/rails#50979) that
+# previously required actioncable-next.
+gem "rails", github: "rails/rails", branch: "main"
 
 gem "async"
 
