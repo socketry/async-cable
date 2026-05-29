@@ -15,7 +15,7 @@ $ bundle add async-cable
 To use `async-cable`, you need to add the following to your `config/application.rb`:
 
 ~~~ ruby
-require 'async/cable'
+require "async/cable"
 ~~~
 
 This will automatically add the {ruby Async::Cable::Middleware} to your middleware stack which will handle incoming WebSocket connections and integrates with Action Cable.
