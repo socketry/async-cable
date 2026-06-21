@@ -7,10 +7,9 @@ source "https://rubygems.org"
 
 gemspec
 
-# The `next` branch targets Rails main, which now includes the
-# `ActionCable::Server::Socket` abstraction (rails/rails#50979) that
-# previously required actioncable-next.
-gem "rails", github: "rails/rails", branch: "main"
+# The `next` branch targets Rails main, plus the configurable Action Cable
+# server hook proposed in rails/rails#57803.
+gem "rails", github: "samuel-williams-shopify/rails", branch: "action-cable-configurable-server"
 
 gem "async"
 
