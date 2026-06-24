@@ -18,4 +18,4 @@ To use `async-cable`, you need to add the following to your `config/application.
 require "async/cable"
 ~~~
 
-This will automatically add the {ruby Async::Cable::Middleware} to your middleware stack which will handle incoming WebSocket connections and integrates with Action Cable.
+This will automatically configure {ruby Async::Cable::Server} as the Action Cable server implementation. Rails will mount it at the configured Action Cable mount path, where it handles incoming WebSocket connections using Async.

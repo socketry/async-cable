@@ -4,6 +4,7 @@
 # Copyright, 2024, by Samuel Williams.
 
 require_relative "cable/version"
+require_relative "cable/server"
 
 begin
 	require "rails/railtie"
