@@ -18,7 +18,8 @@ describe Async::Cable::Server do
 		"http://localhost:0/"
 	end
 	
-	let(:cable_server) {subject.new}
+	let(:config) {::ActionCable::Configuration.new}
+	let(:cable_server) {subject.new(config)}
 	
 	before do
 		cable_server.config.disable_request_forgery_protection = true

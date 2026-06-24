@@ -6,7 +6,7 @@ The `next` branch tracks Rails `main` and relies on the `ActionCable::Server::So
 
 ## Rails Compatibility
 
-This branch requires unreleased Action Cable changes from Rails `main`, currently versioned as `8.2.0.alpha`. Released Rails 8.1.x does not include `ActionCable::Server::Socket` or `config.action_cable.server`; in Rails 8.1, `ActionCable::Connection::Base` still accepts `(server, env, coder: ...)` rather than `(server, socket)`.
+This branch requires unreleased Action Cable changes from Rails `main`, currently versioned as `8.2.0.alpha`. Released Rails 8.1.x does not include `ActionCable::Server::Socket` or `config.action_cable.server_class`; in Rails 8.1, `ActionCable::Connection::Base` still accepts `(server, env, coder: ...)` rather than `(server, socket)`.
 
 The gemspec therefore pins `actioncable >= 8.2.0.alpha` to prevent accidentally resolving against Rails 8.1.x. Once Rails ships a stable release containing rails/rails#50979, this constraint should be changed to that released version.
 

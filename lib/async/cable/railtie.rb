@@ -10,7 +10,7 @@ module Async
 		# Rails integration that configures Action Cable to use {Server}.
 		class Railtie < Rails::Railtie
 			initializer "async.cable.configure_action_cable", before: "action_cable.set_configs" do |app|
-				app.config.action_cable.server = Async::Cable::Server
+				app.config.action_cable.server_class = Async::Cable::Server
 			end
 		end
 	end
