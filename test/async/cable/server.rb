@@ -19,7 +19,7 @@ describe Async::Cable::Server do
 	end
 	
 	let(:config) {::ActionCable::Configuration.new}
-	let(:cable_server) {subject.new(config)}
+	let(:cable_server) {subject.new(config: config)}
 	
 	before do
 		cable_server.config.disable_request_forgery_protection = true

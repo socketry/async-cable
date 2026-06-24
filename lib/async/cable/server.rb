@@ -15,8 +15,8 @@ module Async
 		class Server < ::ActionCable::Server::Base
 			# Initialize the server with the given Action Cable configuration.
 			# @parameter config [ActionCable::Configuration] The Action Cable configuration.
-			def initialize(config)
-				super(config)
+			def initialize(config:)
+				super
 				
 				@coder = ActiveSupport::JSON
 				@protocols = ::ActionCable::INTERNAL[:protocols]
